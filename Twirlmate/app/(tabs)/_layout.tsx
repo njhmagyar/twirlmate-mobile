@@ -52,7 +52,7 @@ export default function TabLayout() {
         name="groups"
         options={{
           title: 'Groups',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.3.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={56} name="person.3.fill" color={color} />,
         }}
       />
     </Tabs>

@@ -19,6 +19,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import axios from 'axios';
 import { EventDateListItem } from '@/types/api';
 import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 const US_STATES = [
@@ -396,7 +397,7 @@ export default function EventsListScreen() {
       >
         <SafeAreaView style={[styles.modalContainer, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
           {/* Modal Header */}
-          <View style={[styles.modalHeader, { borderBottomColor: Colors[colorScheme ?? 'light'].text }]}>
+          <View style={[styles.modalHeader, { borderBottomColor: '#9aa8ba' }]}>
             <TouchableOpacity onPress={() => setShowFilter(false)} style={styles.modalButton}>
               <Text style={[styles.modalButtonText, { color: Colors[colorScheme ?? 'light'].text }]}>Cancel</Text>
             </TouchableOpacity>
@@ -413,7 +414,7 @@ export default function EventsListScreen() {
               <TouchableOpacity
                 style={[styles.dropdownButton, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
-                  borderColor: Colors[colorScheme ?? 'light'].text 
+                  borderColor: '#9aa8ba' 
                 }]}
                 onPress={showStateSelector}
               >
@@ -431,7 +432,7 @@ export default function EventsListScreen() {
                 style={[styles.filterInput, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
                   color: Colors[colorScheme ?? 'light'].text,
-                  borderColor: Colors[colorScheme ?? 'light'].text 
+                  borderColor: '#9aa8ba' 
                 }]}
                 placeholder="Competition tier"
                 placeholderTextColor={Colors[colorScheme ?? 'light'].text}
@@ -447,7 +448,7 @@ export default function EventsListScreen() {
                 style={[styles.filterInput, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
                   color: Colors[colorScheme ?? 'light'].text,
-                  borderColor: Colors[colorScheme ?? 'light'].text 
+                  borderColor: '#9aa8ba' 
                 }]}
                 placeholder="Event type"
                 placeholderTextColor={Colors[colorScheme ?? 'light'].text}
@@ -463,7 +464,7 @@ export default function EventsListScreen() {
                 style={[styles.filterInput, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
                   color: Colors[colorScheme ?? 'light'].text,
-                  borderColor: Colors[colorScheme ?? 'light'].text 
+                  borderColor: '#9aa8ba' 
                 }]}
                 placeholder="e.g. In-person, Virtual"
                 placeholderTextColor={Colors[colorScheme ?? 'light'].text}
@@ -479,7 +480,7 @@ export default function EventsListScreen() {
                 style={[styles.filterInput, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
                   color: Colors[colorScheme ?? 'light'].text,
-                  borderColor: Colors[colorScheme ?? 'light'].text 
+                  borderColor: '#9aa8ba' 
                 }]}
                 placeholder="Organizing body"
                 placeholderTextColor={Colors[colorScheme ?? 'light'].text}
@@ -516,6 +517,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
+    fontFamily: Fonts.bold,
   },
   headerButtons: {
     flexDirection: 'row',
@@ -529,6 +531,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     marginRight: 8,
+    fontFamily: Fonts.regular,
   },
   searchContainer: {
     paddingHorizontal: 20,
@@ -557,6 +560,7 @@ const styles = StyleSheet.create({
   monthText: {
     fontSize: 18,
     fontWeight: '600',
+    fontFamily: Fonts.semiBold,
   },
   listContent: {
     padding: 0,
@@ -589,23 +593,27 @@ const styles = StyleSheet.create({
   eventTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: Fonts.bold,
     marginBottom: 8,
   },
   eventLocation: {
     fontSize: 14,
     marginBottom: 4,
     opacity: 0.7,
+    fontFamily: Fonts.semiBold,
   },
   eventDate: {
     fontSize: 14,
     marginBottom: 4,
     opacity: 0.7,
     fontWeight: '600',
+    fontFamily: Fonts.semiBold,
   },
   registrationStatus: {
     paddingTop: 4,
     fontSize: 12,
     fontWeight: '400',
+    fontFamily: Fonts.regular,
     opacity: .7
   },
   centered: {
@@ -625,7 +633,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 8,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
@@ -640,7 +648,7 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontFamily: Fonts.semiBold
   },
   modalContent: {
     flex: 1,
@@ -651,7 +659,7 @@ const styles = StyleSheet.create({
   },
   filterLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: Fonts.semiBold,
     marginBottom: 8,
   },
   filterInput: {
@@ -660,6 +668,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 16,
     fontSize: 16,
+    fontFamily: Fonts.regular
   },
   clearButton: {
     marginTop: 32,
@@ -669,7 +678,7 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: Fonts.semiBold
   },
   dropdownButton: {
     height: 48,
@@ -683,5 +692,6 @@ const styles = StyleSheet.create({
   dropdownText: {
     fontSize: 16,
     flex: 1,
+    fontFamily: Fonts.regular
   },
 });

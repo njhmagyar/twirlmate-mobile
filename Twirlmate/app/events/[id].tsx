@@ -15,6 +15,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import axios from 'axios';
 import { EventDateDetail } from '@/types/api';
 import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function EventDetailScreen() {
@@ -60,11 +61,20 @@ export default function EventDetailScreen() {
     });
   };
 
-  const getRegistrationStatus = (event: EventDateDetail) => {
-    if (event.registration_upcoming) return 'Registration Opening Soon';
-    if (event.registration_available) return 'Registration Open';
-    if (event.registration_closed) return 'Registration Closed';
-    return 'Registration Status Unknown';
+  const formatDeadline = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const getRegistrationStatus = (event: EventDateListItem) => {
+    if (event.registration_upcoming) return `Registration opens ${formatDeadline(event.registration_open)} @ ${formatTime(event.registration_open)}`;
+    if (event.registration_available) return `Register by ${formatDeadline(event.registration_close)} @ ${formatTime(event.registration_close)}`;
+    if (event.registration_closed) return `Registration closed ${formatDeadline(event.registration_close)} @ ${formatTime(event.registration_close)}`;
+    return 'Registration Dates Unknown';
   };
 
   const handleLinkPress = async (url: string) => {
@@ -221,13 +231,13 @@ export default function EventDetailScreen() {
               Contact Information
             </Text>
             {event.event.contact_name && (
-              <Text style={[styles.sectionContent, { color: Colors[colorScheme ?? 'light'].text }]}>
+              <Text style={[styles.sectionContent, { color: Colors[colorScheme ?? 'light'].text, marginBottom: 0 }]}>
                 Name: {event.event.contact_name}
               </Text>
             )}
             {event.event.contact_email && (
               <TouchableOpacity onPress={() => handleLinkPress(`mailto:${event.event.contact_email}`)}>
-                <Text style={[styles.linkText, styles.sectionContent]}>
+                <Text style={[styles.linkText, styles.sectionContent, {marginBottom: 0}]}>
                   Email: {event.event.contact_email}
                 </Text>
               </TouchableOpacity>
@@ -262,7 +272,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: Fonts.bold,
     marginBottom: 16,
   },
   basicInfo: {
@@ -272,45 +282,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 4,
     opacity: 0.8,
+    fontFamily: Fonts.semiBold,
   },
   date: {
     fontSize: 16,
     marginBottom: 4,
     opacity: 0.8,
+    fontFamily: Fonts.regular
   },
   time: {
     fontSize: 16,
     marginBottom: 4,
     opacity: 0.8,
-  },
-  format: {
-    fontSize: 16,
-    marginBottom: 8,
-    opacity: 0.8,
-  },
-  eventTypes: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 8,
-  },
-  typeTag: {
-    backgroundColor: '#E3F2FD',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginRight: 8,
-    marginBottom: 4,
-  },
-  typeText: {
-    fontSize: 14,
-    color: '#1976D2',
-    fontWeight: '500',
+    fontFamily: Fonts.regular
   },
   registrationStatus: {
-    fontSize: 14,
-    fontWeight: '600',
-    textTransform: 'uppercase',
+    fontSize: 18,
     marginTop: 16,
+    fontFamily: Fonts.semiBold
   },
   registerButton: {
     backgroundColor: '#038179',
@@ -323,7 +312,7 @@ const styles = StyleSheet.create({
   registerButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: Fonts.semiBold
   },
   section: {
     marginBottom: 20,
@@ -332,18 +321,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 8,
+    fontFamily: Fonts.semiBold
   },
   sectionContent: {
     fontSize: 16,
     lineHeight: 24,
+    fontFamily: Fonts.regular,
     opacity: 0.8,
+    marginBottom: 20
   },
   linkButton: {
-    paddingVertical: 8,
+    paddingTop: 4,
   },
   linkText: {
-    color: '#1976D2',
+    color: '#038179',
     fontSize: 16,
+    fontFamily: Fonts.regular
   },
   centered: {
     flex: 1,

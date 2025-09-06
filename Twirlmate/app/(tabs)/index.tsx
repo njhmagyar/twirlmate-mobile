@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function HomeScreen() {
@@ -86,12 +87,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+    fontFamily: Fonts.bold,
     marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     opacity: 0.7,
+    fontFamily: Fonts.regular,
     textAlign: 'center',
     lineHeight: 22,
   },
@@ -101,6 +104,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
+    fontFamily: Fonts.semiBold,
     marginBottom: 16,
   },
   actionCard: {
@@ -130,11 +134,13 @@ const styles = StyleSheet.create({
   actionTitle: {
     fontSize: 16,
     fontWeight: '600',
+    fontFamily: Fonts.semiBold,
     marginBottom: 4,
   },
   actionSubtitle: {
     fontSize: 14,
     opacity: 0.7,
+    fontFamily: Fonts.regular,
     lineHeight: 18,
   },
 });
