@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
   Text, 
@@ -12,8 +12,9 @@ import {
   SafeAreaView,
   Modal,
   ScrollView,
-  Alert
+  Animated
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import axios from 'axios';
@@ -77,6 +78,38 @@ const US_STATES = [
   { value: 'DC', label: 'District of Columbia' }
 ];
 
+const TIERS = [
+  { value: '', label: 'All Tiers' },
+  { value: 'open', label: 'Open / Local' },
+  { value: 'state', label: 'State / Provincial' },
+  { value: 'regional', label: 'Regional' },
+  { value: 'national', label: 'National' },
+  { value: 'international', label: 'International' },
+  { value: 'other', label: 'Other' }
+];
+
+const TYPES = [
+  { value: '', label: 'All Types' },
+  { value: '1', label: 'Competition' },
+  { value: '2', label: 'Class' },
+  { value: '3', label: 'Clinic' },
+  { value: '4', label: 'Camp' },
+  { value: '5', label: 'Seminar' },
+  { value: '6', label: 'Twirler Day' },
+  { value: '7', label: 'Audition' }
+];
+
+const ORGANIZATIONS = [
+  { value: '', label: 'All Organizations' },
+  { value: '5', label: 'AAU' },
+  { value: '4', label: 'DMA' },
+  { value: '7', label: 'IBTF' },
+  { value: '1', label: 'NBTA' },
+  { value: '3', label: 'TU' },
+  { value: '6', label: 'USTA' },
+  { value: '2', label: 'WTA' }
+];
+
 export default function EventsListScreen() {
   const [events, setEvents] = useState<EventDateListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,19 +118,31 @@ export default function EventsListScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
+  const [showStatePicker, setShowStatePicker] = useState(false);
+  const [showTierPicker, setShowTierPicker] = useState(false);
+  const [showTypePicker, setShowTypePicker] = useState(false);
+  const [showOrganizationPicker, setShowOrganizationPicker] = useState(false);
+  
+  // Animation refs
+  const statePickerFadeAnim = useRef(new Animated.Value(0)).current;
+  const statePickerSlideAnim = useRef(new Animated.Value(300)).current;
+  const tierPickerFadeAnim = useRef(new Animated.Value(0)).current;
+  const tierPickerSlideAnim = useRef(new Animated.Value(300)).current;
+  const typePickerFadeAnim = useRef(new Animated.Value(0)).current;
+  const typePickerSlideAnim = useRef(new Animated.Value(300)).current;
+  const organizationPickerFadeAnim = useRef(new Animated.Value(0)).current;
+  const organizationPickerSlideAnim = useRef(new Animated.Value(300)).current;
   const [filters, setFilters] = useState({
     name: '',
     state: '',
     tier: '',
     type: '',
-    comp_format: '',
     organization: ''
   });
   const [tempFilters, setTempFilters] = useState({
     state: '',
     tier: '',
     type: '',
-    comp_format: '',
     organization: ''
   });
   const colorScheme = useColorScheme();
@@ -194,7 +239,6 @@ export default function EventsListScreen() {
         state: filters.state,
         tier: filters.tier,
         type: filters.type,
-        comp_format: filters.comp_format,
         organization: filters.organization
       });
     }
@@ -220,7 +264,6 @@ export default function EventsListScreen() {
       state: '',
       tier: '',
       type: '',
-      comp_format: '',
       organization: ''
     };
     setTempFilters(clearedFilters);
@@ -238,29 +281,175 @@ export default function EventsListScreen() {
     return state ? state.label : 'All States';
   };
 
-  const selectState = (stateValue: string) => {
-    updateTempFilter('state', stateValue);
+  const showStateSelector = () => {
+    console.log('showStateSelector called');
+    setShowStatePicker(true);
+    // Start animations
+    Animated.parallel([
+      Animated.timing(statePickerFadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(statePickerSlideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      })
+    ]).start();
   };
 
-  const showStateSelector = () => {
-    const options = US_STATES.map(state => state.label);
-    
-    Alert.alert(
-      'Select State',
-      '',
-      [
-        ...US_STATES.map(state => ({
-          text: state.label,
-          onPress: () => selectState(state.value),
-          style: tempFilters.state === state.value ? 'default' : 'default'
-        })),
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        }
-      ],
-      { cancelable: true }
-    );
+  const showTierSelector = () => {
+    console.log('showTierSelector called');
+    setShowTierPicker(true);
+    // Start animations
+    Animated.parallel([
+      Animated.timing(tierPickerFadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(tierPickerSlideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      })
+    ]).start();
+  };
+
+  const showTypeSelector = () => {
+    console.log('showTypeSelector called');
+    setShowTypePicker(true);
+    // Start animations
+    Animated.parallel([
+      Animated.timing(typePickerFadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(typePickerSlideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      })
+    ]).start();
+  };
+
+  const showOrganizationSelector = () => {
+    console.log('showOrganizationSelector called');
+    setShowOrganizationPicker(true);
+    // Start animations
+    Animated.parallel([
+      Animated.timing(organizationPickerFadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(organizationPickerSlideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      })
+    ]).start();
+  };
+
+  const hideStatePicker = () => {
+    Animated.parallel([
+      Animated.timing(statePickerFadeAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+      Animated.timing(statePickerSlideAnim, {
+        toValue: 300,
+        duration: 250,
+        useNativeDriver: false,
+      })
+    ]).start(() => {
+      setShowStatePicker(false);
+    });
+  };
+
+  const hideTierPicker = () => {
+    Animated.parallel([
+      Animated.timing(tierPickerFadeAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+      Animated.timing(tierPickerSlideAnim, {
+        toValue: 300,
+        duration: 250,
+        useNativeDriver: false,
+      })
+    ]).start(() => {
+      setShowTierPicker(false);
+    });
+  };
+
+  const hideTypePicker = () => {
+    Animated.parallel([
+      Animated.timing(typePickerFadeAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+      Animated.timing(typePickerSlideAnim, {
+        toValue: 300,
+        duration: 250,
+        useNativeDriver: false,
+      })
+    ]).start(() => {
+      setShowTypePicker(false);
+    });
+  };
+
+  const hideOrganizationPicker = () => {
+    Animated.parallel([
+      Animated.timing(organizationPickerFadeAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+      Animated.timing(organizationPickerSlideAnim, {
+        toValue: 300,
+        duration: 250,
+        useNativeDriver: false,
+      })
+    ]).start(() => {
+      setShowOrganizationPicker(false);
+    });
+  };
+
+  const confirmStatePicker = () => {
+    hideStatePicker();
+  };
+
+  const confirmTierPicker = () => {
+    hideTierPicker();
+  };
+
+  const confirmTypePicker = () => {
+    hideTypePicker();
+  };
+
+  const confirmOrganizationPicker = () => {
+    hideOrganizationPicker();
+  };
+
+  const getTierLabel = (tierValue: string) => {
+    const tier = TIERS.find(t => t.value === tierValue);
+    return tier ? tier.label : 'All Tiers';
+  };
+
+  const getTypeLabel = (typeValue: string) => {
+    const type = TYPES.find(t => t.value === typeValue);
+    return type ? type.label : 'All Types';
+  };
+
+  const getOrganizationLabel = (organizationValue: string) => {
+    const organization = ORGANIZATIONS.find(o => o.value === organizationValue);
+    return organization ? organization.label : 'All Organizations';
   };
 
   const formatDate = (dateString: string) => {
@@ -428,65 +617,53 @@ export default function EventsListScreen() {
             {/* Tier Filter */}
             <View style={styles.filterSection}>
               <Text style={[styles.filterLabel, { color: Colors[colorScheme ?? 'light'].text }]}>Tier</Text>
-              <TextInput
-                style={[styles.filterInput, { 
+              <TouchableOpacity
+                style={[styles.dropdownButton, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
-                  color: Colors[colorScheme ?? 'light'].text,
                   borderColor: '#9aa8ba' 
                 }]}
-                placeholder="Competition tier"
-                placeholderTextColor={Colors[colorScheme ?? 'light'].text}
-                value={tempFilters.tier}
-                onChangeText={(text) => updateTempFilter('tier', text)}
-              />
+                onPress={showTierSelector}
+              >
+                <Text style={[styles.dropdownText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                  {getTierLabel(tempFilters.tier)}
+                </Text>
+                <IconSymbol size={16} name="chevron.down" color={Colors[colorScheme ?? 'light'].text} />
+              </TouchableOpacity>
             </View>
 
             {/* Type Filter */}
             <View style={styles.filterSection}>
               <Text style={[styles.filterLabel, { color: Colors[colorScheme ?? 'light'].text }]}>Type</Text>
-              <TextInput
-                style={[styles.filterInput, { 
+              <TouchableOpacity
+                style={[styles.dropdownButton, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
-                  color: Colors[colorScheme ?? 'light'].text,
                   borderColor: '#9aa8ba' 
                 }]}
-                placeholder="Event type"
-                placeholderTextColor={Colors[colorScheme ?? 'light'].text}
-                value={tempFilters.type}
-                onChangeText={(text) => updateTempFilter('type', text)}
-              />
+                onPress={showTypeSelector}
+              >
+                <Text style={[styles.dropdownText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                  {getTypeLabel(tempFilters.type)}
+                </Text>
+                <IconSymbol size={16} name="chevron.down" color={Colors[colorScheme ?? 'light'].text} />
+              </TouchableOpacity>
             </View>
 
-            {/* Competition Format Filter */}
-            <View style={styles.filterSection}>
-              <Text style={[styles.filterLabel, { color: Colors[colorScheme ?? 'light'].text }]}>Competition Format</Text>
-              <TextInput
-                style={[styles.filterInput, { 
-                  backgroundColor: Colors[colorScheme ?? 'light'].background,
-                  color: Colors[colorScheme ?? 'light'].text,
-                  borderColor: '#9aa8ba' 
-                }]}
-                placeholder="e.g. In-person, Virtual"
-                placeholderTextColor={Colors[colorScheme ?? 'light'].text}
-                value={tempFilters.comp_format}
-                onChangeText={(text) => updateTempFilter('comp_format', text)}
-              />
-            </View>
 
             {/* Organization Filter */}
             <View style={styles.filterSection}>
               <Text style={[styles.filterLabel, { color: Colors[colorScheme ?? 'light'].text }]}>Organization</Text>
-              <TextInput
-                style={[styles.filterInput, { 
+              <TouchableOpacity
+                style={[styles.dropdownButton, { 
                   backgroundColor: Colors[colorScheme ?? 'light'].background,
-                  color: Colors[colorScheme ?? 'light'].text,
                   borderColor: '#9aa8ba' 
                 }]}
-                placeholder="Organizing body"
-                placeholderTextColor={Colors[colorScheme ?? 'light'].text}
-                value={tempFilters.organization}
-                onChangeText={(text) => updateTempFilter('organization', text)}
-              />
+                onPress={showOrganizationSelector}
+              >
+                <Text style={[styles.dropdownText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                  {getOrganizationLabel(tempFilters.organization)}
+                </Text>
+                <IconSymbol size={16} name="chevron.down" color={Colors[colorScheme ?? 'light'].text} />
+              </TouchableOpacity>
             </View>
 
             {/* Clear Filters Button */}
@@ -494,6 +671,181 @@ export default function EventsListScreen() {
               <Text style={[styles.clearButtonText, { color: '#F44336' }]}>Clear All Filters</Text>
             </TouchableOpacity>
           </ScrollView>
+          {/* State Picker Overlay - Inside Modal */}
+          {showStatePicker && (
+            <Animated.View style={[styles.pickerOverlayContainer, { opacity: statePickerFadeAnim }]}>
+              <TouchableOpacity 
+                style={styles.pickerBackdrop} 
+                onPress={hideStatePicker}
+                activeOpacity={1}
+              />
+              <View style={styles.pickerSlideContainer}>
+                <Animated.View style={[
+                  styles.pickerBottomSheet, 
+                  { 
+                    backgroundColor: Colors[colorScheme ?? 'light'].background,
+                    transform: [{ translateY: statePickerSlideAnim }]
+                  }
+                ]}>
+                  <View style={[styles.pickerHeader, { borderBottomColor: '#9aa8ba' }]}>
+                    <TouchableOpacity onPress={hideStatePicker}>
+                      <Text style={[styles.pickerButtonText, { color: Colors[colorScheme ?? 'light'].text }]}>Cancel</Text>
+                    </TouchableOpacity>
+                    <Text style={[styles.pickerTitle, { color: Colors[colorScheme ?? 'light'].text }]}>Select State</Text>
+                    <TouchableOpacity onPress={confirmStatePicker}>
+                      <Text style={[styles.pickerButtonText, { color: '#038179' }]}>Done</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Picker
+                    selectedValue={tempFilters.state}
+                    onValueChange={(itemValue) => updateTempFilter('state', itemValue)}
+                    style={[styles.picker, { color: Colors[colorScheme ?? 'light'].text }]}
+                  >
+                    {US_STATES.map((state) => (
+                      <Picker.Item
+                        key={state.value}
+                        label={state.label}
+                        value={state.value}
+                        color={Colors[colorScheme ?? 'light'].text}
+                      />
+                    ))}
+                  </Picker>
+                </Animated.View>
+              </View>
+            </Animated.View>
+          )}
+
+          {/* Tier Picker Overlay - Inside Modal */}
+          {showTierPicker && (
+            <Animated.View style={[styles.pickerOverlayContainer, { opacity: tierPickerFadeAnim }]}>
+              <TouchableOpacity 
+                style={styles.pickerBackdrop} 
+                onPress={hideTierPicker}
+                activeOpacity={1}
+              />
+              <View style={styles.pickerSlideContainer}>
+                <Animated.View style={[
+                  styles.pickerBottomSheet, 
+                  { 
+                    backgroundColor: Colors[colorScheme ?? 'light'].background,
+                    transform: [{ translateY: tierPickerSlideAnim }]
+                  }
+                ]}>
+                  <View style={[styles.pickerHeader, { borderBottomColor: '#9aa8ba' }]}>
+                    <TouchableOpacity onPress={hideTierPicker}>
+                      <Text style={[styles.pickerButtonText, { color: Colors[colorScheme ?? 'light'].text }]}>Cancel</Text>
+                    </TouchableOpacity>
+                    <Text style={[styles.pickerTitle, { color: Colors[colorScheme ?? 'light'].text }]}>Select Tier</Text>
+                    <TouchableOpacity onPress={confirmTierPicker}>
+                      <Text style={[styles.pickerButtonText, { color: '#038179' }]}>Done</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Picker
+                    selectedValue={tempFilters.tier}
+                    onValueChange={(itemValue) => updateTempFilter('tier', itemValue)}
+                    style={[styles.picker, { color: Colors[colorScheme ?? 'light'].text }]}
+                  >
+                    {TIERS.map((tier) => (
+                      <Picker.Item
+                        key={tier.value}
+                        label={tier.label}
+                        value={tier.value}
+                        color={Colors[colorScheme ?? 'light'].text}
+                      />
+                    ))}
+                  </Picker>
+                </Animated.View>
+              </View>
+            </Animated.View>
+          )}
+
+          {/* Type Picker Overlay - Inside Modal */}
+          {showTypePicker && (
+            <Animated.View style={[styles.pickerOverlayContainer, { opacity: typePickerFadeAnim }]}>
+              <TouchableOpacity 
+                style={styles.pickerBackdrop} 
+                onPress={hideTypePicker}
+                activeOpacity={1}
+              />
+              <View style={styles.pickerSlideContainer}>
+                <Animated.View style={[
+                  styles.pickerBottomSheet, 
+                  { 
+                    backgroundColor: Colors[colorScheme ?? 'light'].background,
+                    transform: [{ translateY: typePickerSlideAnim }]
+                  }
+                ]}>
+                  <View style={[styles.pickerHeader, { borderBottomColor: '#9aa8ba' }]}>
+                    <TouchableOpacity onPress={hideTypePicker}>
+                      <Text style={[styles.pickerButtonText, { color: Colors[colorScheme ?? 'light'].text }]}>Cancel</Text>
+                    </TouchableOpacity>
+                    <Text style={[styles.pickerTitle, { color: Colors[colorScheme ?? 'light'].text }]}>Select Type</Text>
+                    <TouchableOpacity onPress={confirmTypePicker}>
+                      <Text style={[styles.pickerButtonText, { color: '#038179' }]}>Done</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Picker
+                    selectedValue={tempFilters.type}
+                    onValueChange={(itemValue) => updateTempFilter('type', itemValue)}
+                    style={[styles.picker, { color: Colors[colorScheme ?? 'light'].text }]}
+                  >
+                    {TYPES.map((type) => (
+                      <Picker.Item
+                        key={type.value}
+                        label={type.label}
+                        value={type.value}
+                        color={Colors[colorScheme ?? 'light'].text}
+                      />
+                    ))}
+                  </Picker>
+                </Animated.View>
+              </View>
+            </Animated.View>
+          )}
+
+          {/* Organization Picker Overlay - Inside Modal */}
+          {showOrganizationPicker && (
+            <Animated.View style={[styles.pickerOverlayContainer, { opacity: organizationPickerFadeAnim }]}>
+              <TouchableOpacity 
+                style={styles.pickerBackdrop} 
+                onPress={hideOrganizationPicker}
+                activeOpacity={1}
+              />
+              <View style={styles.pickerSlideContainer}>
+                <Animated.View style={[
+                  styles.pickerBottomSheet, 
+                  { 
+                    backgroundColor: Colors[colorScheme ?? 'light'].background,
+                    transform: [{ translateY: organizationPickerSlideAnim }]
+                  }
+                ]}>
+                  <View style={[styles.pickerHeader, { borderBottomColor: '#9aa8ba' }]}>
+                    <TouchableOpacity onPress={hideOrganizationPicker}>
+                      <Text style={[styles.pickerButtonText, { color: Colors[colorScheme ?? 'light'].text }]}>Cancel</Text>
+                    </TouchableOpacity>
+                    <Text style={[styles.pickerTitle, { color: Colors[colorScheme ?? 'light'].text }]}>Select Organization</Text>
+                    <TouchableOpacity onPress={confirmOrganizationPicker}>
+                      <Text style={[styles.pickerButtonText, { color: '#038179' }]}>Done</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Picker
+                    selectedValue={tempFilters.organization}
+                    onValueChange={(itemValue) => updateTempFilter('organization', itemValue)}
+                    style={[styles.picker, { color: Colors[colorScheme ?? 'light'].text }]}
+                  >
+                    {ORGANIZATIONS.map((organization) => (
+                      <Picker.Item
+                        key={organization.value}
+                        label={organization.label}
+                        value={organization.value}
+                        color={Colors[colorScheme ?? 'light'].text}
+                      />
+                    ))}
+                  </Picker>
+                </Animated.View>
+              </View>
+            </Animated.View>
+          )}
         </SafeAreaView>
       </Modal>
 
@@ -693,5 +1045,54 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
     fontFamily: Fonts.regular
+  },
+  // Picker styles
+  pickerOverlayContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 9999,
+  },
+  pickerBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  pickerSlideContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'flex-end',
+  },
+  pickerBottomSheet: {
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingBottom: 34, // Safe area padding
+    maxHeight: 300, // Fixed height instead of percentage
+  },
+  pickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
+  pickerTitle: {
+    fontSize: 18,
+    fontFamily: Fonts.semiBold,
+  },
+  pickerButtonText: {
+    fontSize: 16,
+    fontFamily: Fonts.semiBold,
+  },
+  picker: {
+    height: 200,
   },
 });
