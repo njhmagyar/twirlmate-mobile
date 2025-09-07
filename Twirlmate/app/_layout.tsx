@@ -92,7 +92,7 @@ export default function RootLayout() {
           name="events/[id]" 
           options={{ 
             title: '',
-            headerBackTitle: 'Events',
+            headerBackTitle: 'Back',
             headerBackTitleStyle: {
               fontFamily: 'Montserrat_600SemiBold',
               color: '#038179',

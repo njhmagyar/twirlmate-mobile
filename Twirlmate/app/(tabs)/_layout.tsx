@@ -55,6 +55,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={56} name="person.3.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="events-search"
+        options={{
+          href: null, // Hide from tab bar
+          headerShown: false,
+          title: 'Search Events',
+        }}
+      />
     </Tabs>
   );
 }
