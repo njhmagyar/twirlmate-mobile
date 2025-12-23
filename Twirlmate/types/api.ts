@@ -93,18 +93,24 @@ export interface EventDateDetail {
   id: number;
 }
 
-export interface Coach {
-  id: string;
+export interface CoachListItem {
+  id: number;
+  name: string;
+  image: string;
+  location: string;
+  mobile_detail_url: string;
+}
+
+export interface CoachDetail {
+  id: number;
   name: string;
   bio: string;
+  image: string;
   location: string;
-  specialties: string[];
-  contactInfo: {
-    email?: string;
-    phone?: string;
-    website?: string;
-  };
-  imageUrl?: string;
+  coach_specialties: string[];
+  profile_visibility: string;
+  web_detail_url: string;
+  web_coach_request_url: string;
 }
 
 export interface Group {
